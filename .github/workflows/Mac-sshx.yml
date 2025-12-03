@@ -1,0 +1,23 @@
+name: Manual macOS SSHX
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-sshx:
+    runs-on: namespace-profile-mac
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create user "rohit" and add to admin
+        run: |
+          sudo bash -c 'sysadminctl -addUser rohit -password rohit; dseditgroup -o edit -a rohit -t user admin'
+
+      - name: Enable VNC / Remote Management
+        run: |
+          sudo bash -c '/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw rohit; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate'
+
+      - name: Start SSHX session
+        run: |
+          curl -sSf https://sshx.io/get | sh -s run
