@@ -6,6 +6,7 @@ on:
 jobs:
   run-sshx:
     runs-on: namespace-profile-mac
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,8 +17,19 @@ jobs:
 
       - name: Enable VNC / Remote Management
         run: |
-          sudo bash -c '/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw rohit; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console; /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate'
+          sudo bash -c '/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all; \
+          /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes; \
+          /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw rohit; \
+          /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console; \
+          /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate'
 
-      - name: Start SSHX session
+      - name: Start persistent Pinggy reverse tunnel for VNC
         run: |
-          curl -sSf https://sshx.io/get | sh -s run
+          while true; do
+            ssh -p 443 \
+              -o StrictHostKeyChecking=no \
+              -o ServerAliveInterval=30 \
+              -R0:localhost:5900 \
+              tcp+force@free.pinggy.io
+            sleep 10
+          done
