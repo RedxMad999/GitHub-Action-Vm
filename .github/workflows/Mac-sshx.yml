@@ -23,6 +23,44 @@ jobs:
           /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console; \
           /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate'
 
-      - name: Start Python HTTP server
+      - name: Start Python HTTP server (8080)
+        timeout-minutes: 60
+        continue-on-error: true
         run: |
           python3 -m http.server 8080
+
+      - name: Start Python HTTP server (8081)
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          python3 -m http.server 8081
+
+      - name: Start Python HTTP server (8082)
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          python3 -m http.server 8082
+
+      - name: Start Python HTTP server (8083)
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          python3 -m http.server 8083
+
+      - name: Start Python HTTP server (8084)
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          python3 -m http.server 8084
+
+      - name: Start Python HTTP server (8085)
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          python3 -m http.server 8085
+
+      - name: Start Python HTTP server (8086)
+        timeout-minutes: 60
+        continue-on-error: true
+        run: |
+          python3 -m http.server 8086
